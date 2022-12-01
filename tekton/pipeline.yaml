@@ -72,6 +72,6 @@ spec:
     - name: deployment
       value: $(params.deployment-name)
     - name: IMAGE
-      value: $(params.IMAGE)@$(task.build-image.results.IMAGE_DIGEST)
+      value: $(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)
     runAfter:
     - apply-manifests
