@@ -9,16 +9,19 @@ spec:
   - name: deployment-name
     type: string
     description: name of the deployment to be patched
+    default: nodejs-example
   - name: git-url
     type: string
     description: url of the git repo for the code of deployment
+    default: https://github.com/tekton-autogov/nodejs-example.git
   - name: git-revision
     type: string
     description: revision to be used from repo of the code for deployment
-    default: "main"
+    default: main
   - name: IMAGE
     type: string
     description: image to be build from the code
+    default: image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example
   - name: TLSVERIFY
     type: string
     description: Whether buildah should use TLS verification for interacting with container registries
