@@ -1,0 +1,12 @@
+{
+  "name": "nodejs-app",
+  "version": "1.0.0",
+  "description": "Example Node.js Application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "Apache-2.0"
+}
+
