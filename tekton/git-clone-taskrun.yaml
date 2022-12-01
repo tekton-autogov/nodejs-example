@@ -45,4 +45,4 @@ spec:
     name: git-clone
   workspaces:
   - emptyDir: {}
-    name: source
+    name: output
