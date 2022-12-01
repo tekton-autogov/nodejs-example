@@ -15,7 +15,7 @@ spec:
   - name: TLSVERIFY
     value: "true"
   pipelineRef:
-    name: nodejs-autogov
+    name: autogov-generic
   serviceAccountName: pipeline
   timeout: 1h0m0s
   workspaces:

@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: nodejs-autogov
+  name: autogov-generic
 spec:
   workspaces:
   - name: shared-workspace
