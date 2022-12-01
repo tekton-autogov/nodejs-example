@@ -5,7 +5,7 @@ metadata:
 spec:
   params:
   - name: deployment-name
-    value: pipelines-vote-api
+    value: nodejs-example
   - name: git-url
     value: https://github.com/tekton-autogov/nodejs-example.git
   - name: git-revision
