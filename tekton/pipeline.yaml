@@ -27,7 +27,7 @@ spec:
     description: Whether buildah should use TLS verification for interacting with container registries
     default: "true"
   tasks:
-  - name: fetch-repository
+  - name: git-clone
     taskRef:
       name: git-clone
       kind: ClusterTask
@@ -56,7 +56,7 @@ spec:
     - name: source
       workspace: shared-workspace
     runAfter:
-    - fetch-repository
+    - git-clone
   - name: apply-manifests
     taskRef:
       name: apply-manifests
