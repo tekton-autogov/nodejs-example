@@ -1,0 +1,48 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: git-clone-run-
+spec:
+  podTemplate:
+    securityContext:
+      fsGroup: 65532
+  params:
+  - name: crtFileName
+    value: ca-bundle.crt
+  - name: deleteExisting
+    value: "true"
+  - name: depth
+    value: "1"
+  - name: gitInitImage
+    value: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2
+  - name: httpProxy
+    value: ""
+  - name: httpsProxy
+    value: ""
+  - name: noProxy
+    value: ""
+  - name: refspec
+    value: ""
+  - name: revision
+    value: main
+  - name: sparseCheckoutDirectories
+    value: ""
+  - name: sslVerify
+    value: "true"
+  - name: subdirectory
+    value: ""
+  - name: submodules
+    value: "true"
+  - name: url
+    value: https://github.com/tekton-autogov/nodejs-example.git
+  - name: userHome
+    value: /home/git
+  - name: verbose
+    value: "true"
+  resources: {}
+  serviceAccountName: ""
+  taskRef:
+    name: git-clone
+  workspaces:
+  - emptyDir: {}
+    name: source
