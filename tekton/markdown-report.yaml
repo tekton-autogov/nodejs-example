@@ -16,6 +16,9 @@ spec:
       command: ["/bin/bash", "-c"]
       args:
         - |-
+          ROUTE_NAME=`oc get route -o name | sort | head -n 1`
+          DEPLOYED_URL= https://`oc get ${ROUTE_NAME} -o jsonpath='{.spec.host}'`/
+
           cat << EOF | tee report.md
           # Pipeline Report
           
@@ -33,8 +36,6 @@ spec:
           ## Deploy: DEV
           | Name          | Value |
           |---------------| ----------- |
-          | Chart URL     | TBD |
-          | Chart Version | TBD |
-          | Deployed URL | TBD |
+          | Deployed URL | ${DEPLOYED_URL} |
           EOF
 
