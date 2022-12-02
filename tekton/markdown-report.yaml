@@ -5,7 +5,7 @@ metadata:
 spec:
   steps:
     - name: report
-      image: registry.access.redhat.com/ubi9
+      image: registry.access.redhat.com/ubi9-minimal
       command: ["/bin/bash", "-c"]
       args:
         - |-
