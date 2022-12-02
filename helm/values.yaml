@@ -4,7 +4,7 @@ image:
   pullPolicy: Always
 
 service:
-  name: petclinic
+  name: nodejs-example
   type: ClusterIP
   port: 80
   targetport: 8080
@@ -14,7 +14,7 @@ probe:
   livepath:  /
 
 route:
-  name: petclinic
+  name: nodejs-example
   enabled: True
   annotations: {
   }
