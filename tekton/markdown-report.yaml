@@ -58,7 +58,7 @@ spec:
       args:
         - |-
           DEPLOY_DEV_FACTS_ROUTE_NAME=`oc get route -o name | sort | head -n 1`
-          DEPLOY_DEV_FACTS_ROUTE_URL=https://`oc get ${ROUTE_NAME} -o jsonpath='{.spec.host}'`/
+          DEPLOY_DEV_FACTS_ROUTE_URL=https://`oc get ${DEPLOY_DEV_FACTS_ROUTE_NAME} -o jsonpath='{.spec.host}'`/
 
           cat << EOF | tee report.md
           # Pipeline Report
