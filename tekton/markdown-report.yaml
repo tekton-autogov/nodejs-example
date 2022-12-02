@@ -33,8 +33,8 @@ spec:
           ## Deploy: DEV
           | Name          | Value |
           |---------------| ----------- |
-          | Chart URL     | https://github.com/tekton-autogov/nodejs-example.git |
-          | Chart Version | 0fb2dc73b141ef738429ea58a2dc9838d098d076 |
-          | Deployed URL | http://nodejs-example-nodejs-example.apps.x8ccdonr.eastus.aroapp.io/ |
+          | Chart URL     | TBD |
+          | Chart Version | TBD |
+          | Deployed URL | TBD |
           EOF
 
