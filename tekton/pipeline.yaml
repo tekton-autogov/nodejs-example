@@ -57,24 +57,20 @@ spec:
       workspace: shared-workspace
     runAfter:
     - git-clone
-  - name: apply-manifests
+  - name: deploy-dev
     taskRef:
-      name: apply-manifests
+      name: helm-upgrade-from-source
+      kind: ClusterTask
+    params:
+    - name: charts_dir
+      value: helm
+    - name: overwrite_values
+      value: "image.tag=$(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)"
     workspaces:
     - name: source
       workspace: shared-workspace
     runAfter:
     - build-image
-  - name: update-deployment
-    taskRef:
-      name: update-deployment
-    params:
-    - name: deployment
-      value: $(params.deployment-name)
-    - name: IMAGE
-      value: $(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)
-    runAfter:
-    - apply-manifests
   finally:
   - name: report
     taskRef:
