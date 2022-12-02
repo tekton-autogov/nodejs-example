@@ -3,6 +3,13 @@ kind: Task
 metadata:
   name: markdown-report
 spec:
+  params:
+    - name: git-clone-url
+      type: string
+    - name: git-clone-commit
+      type: string
+    - name: build-image-image-digest
+      type: string
   steps:
     - name: report
       image: registry.access.redhat.com/ubi9-minimal
@@ -12,17 +19,17 @@ spec:
           cat << EOF | tee report.md
           # Pipeline Report
           
-          ## Fetch Repository
+          ## Git Clone
           | Name | Value |
           | ----------- | ----------- |
-          | IMAGE_DIGEST | sha256:e69c126f189ebb82c7ab6beccbe8565d6da87a3a3431326398dcb5010cc0b300 |
-          
+          | url | $(params.git-clone-url) |
+          | commit | $(params.git-clone-commit) |
+
           ## Build Image
           | Name | Value |
           | ----------- | ----------- |
-          | commit | 0fb2dc73b141ef738429ea58a2dc9838d098d076 |
-          | url | https://github.com/tekton-autogov/nodejs-example.git |
-          
+          | IMAGE_DIGEST | $(params.build-image-image-digest) |
+
           ## Deploy: DEV
           | Name          | Value |
           |---------------| ----------- |
