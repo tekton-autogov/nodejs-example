@@ -15,9 +15,10 @@
 6. (Optional) Monitor the pipeline run from the cli. It finish in about 1 minute. `tkn pipelinerun describe --last`
 7. Verify that the application is running `curl $(oc get route nodejs-example -o jsonpath='{.spec.host}') && echo`
 
-## Undeploy App
-`oc delete -f ./k8s/`
-
 ## Uninstall
 `oc delete -f ./tekton/`
+
+## Testing Helm Charts
+helm upgrade --install --set image.tag=image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example@sha256:316c66e1d497170623e53f50d5246e83b755f92bc5f6fa248f243c13e56ff862 manual-release ./helm/
+helm uninstall manual-release
 
