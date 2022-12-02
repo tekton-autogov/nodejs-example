@@ -1,4 +1,4 @@
-oc delete -f ./k8s/
+helm uninstall helm-release
 oc delete -f ./tekton/
 oc create -f ./tekton/
 oc create -f ./hack/pipelinerun.yaml

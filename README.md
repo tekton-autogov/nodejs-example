@@ -16,9 +16,12 @@
 7. Verify that the application is running `curl $(oc get route nodejs-example -o jsonpath='{.spec.host}') && echo`
 
 ## Uninstall
-`oc delete -f ./tekton/`
+```
+oc delete -f ./tekton/
+helm uninstall helm-release
+```
 
 ## Testing Helm Charts
-helm upgrade --install --set image.tag=image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example@sha256:316c66e1d497170623e53f50d5246e83b755f92bc5f6fa248f243c13e56ff862 manual-release ./helm/
-helm uninstall manual-release
+helm upgrade --install --set image.tag=image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example@sha256:316c66e1d497170623e53f50d5246e83b755f92bc5f6fa248f243c13e56ff862 manual-test ./helm/
+helm uninstall manual-test
 
