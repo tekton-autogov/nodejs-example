@@ -1,0 +1,33 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: markdown-report
+spec:
+  steps:
+    - name: report
+      image: registry.access.redhat.com/ubi9
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          cat << EOF | tee report.md
+          # Pipeline Report
+          
+          ## Fetch Repository
+          | Name | Value |
+          | ----------- | ----------- |
+          | IMAGE_DIGEST | sha256:e69c126f189ebb82c7ab6beccbe8565d6da87a3a3431326398dcb5010cc0b300 |
+          
+          ## Build Image
+          | Name | Value |
+          | ----------- | ----------- |
+          | commit | 0fb2dc73b141ef738429ea58a2dc9838d098d076 |
+          | url | https://github.com/tekton-autogov/nodejs-example.git |
+          
+          ## Deploy: DEV
+          | Name          | Value |
+          |---------------| ----------- |
+          | Chart URL     | https://github.com/tekton-autogov/nodejs-example.git |
+          | Chart Version | 0fb2dc73b141ef738429ea58a2dc9838d098d076 |
+          | Deployed URL | http://nodejs-example-nodejs-example.apps.x8ccdonr.eastus.aroapp.io/ |
+          EOF
+
