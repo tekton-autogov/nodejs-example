@@ -12,12 +12,12 @@ spec:
       type: string
   steps:
     - name: report
-      image: registry.access.redhat.com/ubi9-minimal
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
       command: ["/bin/bash", "-c"]
       args:
         - |-
           ROUTE_NAME=`oc get route -o name | sort | head -n 1`
-          DEPLOYED_URL= https://`oc get ${ROUTE_NAME} -o jsonpath='{.spec.host}'`/
+          DEPLOYED_URL=https://`oc get ${ROUTE_NAME} -o jsonpath='{.spec.host}'`/
 
           cat << EOF | tee report.md
           # Pipeline Report
