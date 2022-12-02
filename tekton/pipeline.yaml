@@ -82,10 +82,10 @@ spec:
       value: $(tasks.git-clone.params.subdirectory)
     - name: git-clone-params-revision
       value: $(tasks.git-clone.params.revision)
-    - name: git-clone-params-url
-      value: $(tasks.git-clone.results.url)
     - name: git-clone-results-commit
       value: $(tasks.git-clone.results.commit)
+    - name: git-clone-results-url
+      value: $(tasks.git-clone.results.url)
 
     - name: build-image-params-IMAGE
       value: $(tasks.build-image.params.IMAGE)

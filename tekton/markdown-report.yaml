@@ -12,6 +12,8 @@ spec:
       type: string
     - name: git-clone-results-commit
       type: string
+    - name: git-clone-results-url
+      type: string
 
     - name: build-image-params-IMAGE
       type: string
@@ -35,9 +37,11 @@ spec:
       - name: git-clone-params-subdirectory
         value: $(params.git-clone-params-subdirectory)
       - name: git-clone-params-revision
-        name: $(params.git-clone-params-revision)
+        value: $(params.git-clone-params-revision)
       - name: git-clone-results-commit
         value: $(params.git-clone-results-commit)
+      - name: git-clone-results-url
+        value: $(params.git-clone-results-url)
   
       - name: build-image-params-IMAGE
         value: $(params.build-image-params-IMAGE)
