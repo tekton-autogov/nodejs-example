@@ -4,38 +4,94 @@ metadata:
   name: markdown-report
 spec:
   params:
-    - name: git-clone-url
+    - name: git-clone-params-url
       type: string
-    - name: git-clone-commit
+    - name: git-clone-params-subdirectory
       type: string
-    - name: build-image-image-digest
+    - name: git-clone-params-revision
       type: string
+    - name: git-clone-results-commit
+      type: string
+
+    - name: build-image-params-IMAGE
+      type: string
+    - name: build-image-params-TLSVERIFY
+      type: string
+    - name: build-image-results-IMAGE_DIGEST
+      type: string
+
+    - name: deploy-dev-params-charts_dir
+      type: string
+    - name: deploy-dev-params-overwrite_values
+      type: string
+
   steps:
     - name: report
       image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
       command: ["/bin/bash", "-c"]
+      env:
+      - name: git-clone-params-url
+        value: $(params.git-clone-params-url)
+      - name: git-clone-params-subdirectory
+        value: $(params.git-clone-params-subdirectory)
+      - name: git-clone-params-revision
+        name: $(params.git-clone-params-revision)
+      - name: git-clone-results-commit
+        value: $(params.git-clone-results-commit)
+  
+      - name: build-image-params-IMAGE
+        value: $(params.build-image-params-IMAGE)
+      - name: build-image-params-TLSVERIFY
+        value: $(params.build-image-params-TLSVERIFY)
+      - name: build-image-results-IMAGE_DIGEST
+        value: $(params.build-image-results-IMAGE_DIGEST)
+  
+      - name: deploy-dev-params-charts_dir
+        value: $(params.deploy-dev-params-charts_dir)
+      - name: deploy-dev-params-overwrite_values
+        value: $(params.deploy-dev-params-overwrite_values)
+
       args:
         - |-
-          ROUTE_NAME=`oc get route -o name | sort | head -n 1`
-          ROUTE_URL=https://`oc get ${ROUTE_NAME} -o jsonpath='{.spec.host}'`/
+          DEPLOY_DEV_FACTS_ROUTE_NAME=`oc get route -o name | sort | head -n 1`
+          DEPLOY_DEV_FACTS_ROUTE_URL=https://`oc get ${ROUTE_NAME} -o jsonpath='{.spec.host}'`/
 
           cat << EOF | tee report.md
           # Pipeline Report
           
-          ## Git Clone
-          | Name | Value |
-          | ----------- | ----------- |
-          | url | $(params.git-clone-url) |
-          | commit | $(params.git-clone-commit) |
+          ## Task - Git Clone
+          ### Params
+          | Name                      | Value      |
+          | -------- | --------------------------- |
+          | url      | ${git-clone-params-url}     |
+          | revision | ${git-clone-params-revision}|
+          ### Results
+          | Name     | Value                       |
+          | url      | ${git-clone-results-url}    |
+          | commit   | ${git-clone-results-commit} |
+ 
+          ## Task - Build Image
+          ### Params
+          | Name                         | Value       |
+          | --------- | ----------- |
+          | IMAGE     | ${build-image-params-IMAGE} |
+          | TLSVERIFY | ${build-image-params-TLSVERIFY} |
+          ### Results
+          | Name                             | Value                                      |
+          | -------------------------------- | ------------------------------------------ |
+          | IMAGE_DIGEST | ${build-image-results-IMAGE_DIGEST} |
 
-          ## Build Image
-          | Name | Value |
-          | ----------- | ----------- |
-          | IMAGE_DIGEST | $(params.build-image-image-digest) |
+          ## Task - Deploy: DEV
+          ### Params
+          | Name                               | Value                                        |
+          |------------------------------------| -------------------------------------------- |
+          | charts_dir       | ${deploy-dev-params-charts_dir}       |
+          | overwrite_values | ${deploy-dev-params-overwrite_values} |
 
-          ## Deploy: DEV
-          | Name          | Value |
-          |---------------| ----------- |
-          | Route URL | ${ROUTE_URL} |
+          ### Results
+          | Name       | Value                                        |
+          |------------| ------------------------------ |
+          | Route Name | ${DEPLOY_DEV_FACTS_ROUTE_NAME} |
+          | Route URL  | ${DEPLOY_DEV_FACTS_ROUTE_URL}  |
           EOF
 

@@ -76,10 +76,26 @@ spec:
     taskRef:
       name: markdown-report
     params:
-    - name: git-clone-url
+    - name: git-clone-params-url
+      value: $(tasks.git-clone.params.url)
+    - name: git-clone-params-subdirectory
+      value: $(tasks.git-clone.params.subdirectory)
+    - name: git-clone-params-revision
+      value: $(tasks.git-clone.params.revision)
+    - name: git-clone-params-url
       value: $(tasks.git-clone.results.url)
-    - name: git-clone-commit
+    - name: git-clone-results-commit
       value: $(tasks.git-clone.results.commit)
-    - name: build-image-image-digest
+
+    - name: build-image-params-IMAGE
+      value: $(tasks.build-image.params.IMAGE)
+    - name: build-image-params-TLSVERIFY
+      value: $(tasks.build-image.params.TLSVERIFY)
+    - name: build-image-results-IMAGE_DIGEST
       value: $(tasks.build-image.results.IMAGE_DIGEST)
+
+    - name: deploy-dev-params-charts_dir
+      value: $(tasks.deploy-dev.params.charts-dir)
+    - name: deploy-dev-params-overwrite_values
+      value: $(tasks.deploy-dev.params.overwrite_values)
 
