@@ -75,6 +75,7 @@ spec:
       value: $(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)
     runAfter:
     - apply-manifests
+  finally:
   - name: report
     taskRef:
       name: markdown-report
@@ -85,7 +86,4 @@ spec:
       value: $(tasks.git-clone.results.commit)
     - name: build-image-image-digest
       value: $(tasks.build-image.results.IMAGE_DIGEST)
-
-    runAfter:
-    - apply-manifests
 
