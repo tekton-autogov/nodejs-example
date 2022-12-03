@@ -76,6 +76,17 @@ spec:
     taskRef:
       name: markdown-report
     params:
+    - name: pipeline-param-deployment-name
+      value: $(params.deployment-name)
+    - name: pipeline-param-git-url
+      value: $(params.git-url)
+    - name: pipeline-param-git-revision
+      value: $(params.git-revision)
+    - name: pipeline-param-IMAGE
+      value: $(params.IMAGE)
+    - name: pipeline-param-TLSVERIFY
+      value: $(params.TLSVERIFY)
+
     - name: git-clone-params-url
       value: $(tasks.git-clone.params.url)
     - name: git-clone-params-subdirectory

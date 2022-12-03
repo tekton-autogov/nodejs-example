@@ -4,6 +4,17 @@ metadata:
   name: markdown-report
 spec:
   params:
+    - name: pipeline-param-deployment-name
+      type: string
+    - name: pipeline-param-git-url
+      type: string
+    - name: pipeline-param-git-revision
+      type: string
+    - name: pipeline-param-IMAGE
+      type: string
+    - name: pipeline-param-TLSVERIFY
+      type: string
+
     - name: git-clone-params-url
       type: string
     - name: git-clone-params-subdirectory
@@ -31,7 +42,20 @@ spec:
     - name: report
       image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
       command: ["/bin/bash", "-c"]
+
       env:
+      - name: PIPELINE_PARAM_DEPLOYMENT_NAME
+        value: $(params.pipeline-param-deployment-name)
+      - name: PIPELINE_PARAM_GIT_URL
+        value: $(params.pipeline-param-git-url)
+      - name: PIPELINE_PARAM_GIT_REVISION
+        value: $(params.pipeline-param-git-revision)
+      - name: PIPELINE_PARAM_IMAGE
+        value: $(params.pipeline-param-IMAGE)
+      - name: PIPELINE_PARAM_TLSVERIFY
+        value: $(params.pipeline-param-TLSVERIFY)
+
+
       - name: GIT_CLONE_PARAMS_URL
         value: $(params.git-clone-params-url)
       - name: GIT-CLONE-PARAMS-SUBDIRECTORY
@@ -60,20 +84,31 @@ spec:
           DEPLOY_DEV_FACTS_ROUTE_NAME=`oc get route -o name | sort | head -n 1`
           DEPLOY_DEV_FACTS_ROUTE_URL=https://`oc get ${DEPLOY_DEV_FACTS_ROUTE_NAME} -o jsonpath='{.spec.host}'`/
 
-          cat << EOF | tee report.md
+          cat << EOF
           # Pipeline Report
           
-          ## Task - Git Clone
+          ## Pipeline Params
           | Name         | Value                          |
+          | ------------ | ------------------------------ |
+          | Deployment Name | ${PIPELINE_PARAM_DEPLOYMENT_NAME} |
+          | Git URL         | ${PIPELINE_PARAM_GIT_URL} |
+          | Git Revision    | ${PIPELINE_PARAM_GIT_REVISION} |
+          | Image           | ${PIPELINE_PARAM_IMAGE} |
+          | TLS Verify      | ${PIPELINE_PARAM_TLSVERIFY} |
+
+
+          ## Task Results - Git Clone
+          | Name         | Value                          |
+          | ------------ | ------------------------------ |
           | URL          | ${GIT_CLONE_RESULTS_URL} |
           | Commit       | ${GIT_CLONE_RESULTS_COMMIT} |
  
-          ## Task - Build Image
+          ## Task Results - Build Image
           | Name         | Value                          |
           | ------------ | ------------------------------ |
           | Image Digest | ${BUILD_IMAGE_RESULTS_IMAGE_DIGEST} |
 
-          ## Task - Deploy: DEV
+          ## Task Results - Deploy: DEV
           | Name         | Value                          |
           |------------- | ------------------------------ |
           | Route Name   | ${DEPLOY_DEV_FACTS_ROUTE_NAME} |
