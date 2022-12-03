@@ -8,12 +8,14 @@
 
 ## Setup
 1. Install the OpenShift Pipelines operator
-2. `oc new-project nodejs-example`
-3. **Important:** Create a new OpenShift project. Do not use the default project. `oc new-project nodejs-example`
-4. `oc create -f ./tekton/`
-5. Run the pipeline `oc create -f ./hack/pipelinerun.yaml'
-6. (Optional) Monitor the pipeline run from the cli. It finish in about 1 minute. `tkn pipelinerun describe --last`
-7. Verify that the application is running `curl $(oc get route nodejs-example -o jsonpath='{.spec.host}') && echo`
+2. Install ACS following these instructions - https://docs.openshift.com/acs/3.72/installing/install-ocp-operator.html#installing-using-an-operator
+  - Summary: Install the operator, create a Central CR, generate an init bundle, and create a SecureCluster CR 
+3. `oc new-project nodejs-example`
+4. **Important:** Create a new OpenShift project. Do not use the default project. `oc new-project nodejs-example`
+5. `oc create -f ./tekton/`
+6. Run the pipeline `oc create -f ./hack/pipelinerun.yaml'
+7. (Optional) Monitor the pipeline run from the cli. It finish in about 1 minute. `tkn pipelinerun describe --last`
+8. Verify that the application is running `curl $(oc get route nodejs-example -o jsonpath='{.spec.host}') && echo`
 
 ## Uninstall
 ```
