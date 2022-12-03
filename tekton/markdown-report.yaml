@@ -32,27 +32,27 @@ spec:
       image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
       command: ["/bin/bash", "-c"]
       env:
-      - name: git-clone-params-url
+      - name: GIT_CLONE_PARAMS_URL
         value: $(params.git-clone-params-url)
-      - name: git-clone-params-subdirectory
+      - name: GIT-CLONE-PARAMS-SUBDIRECTORY
         value: $(params.git-clone-params-subdirectory)
-      - name: git-clone-params-revision
+      - name: GIT_CLONE_PARAMS_REVISION
         value: $(params.git-clone-params-revision)
-      - name: git-clone-results-commit
+      - name: GIT_CLONE_RESULTS_COMMIT
         value: $(params.git-clone-results-commit)
-      - name: git-clone-results-url
+      - name: GIT_CLONE_RESULTS_URL
         value: $(params.git-clone-results-url)
   
-      - name: build-image-params-IMAGE
+      - name: BUILD_IMAGE_PARAMS_IMAGE
         value: $(params.build-image-params-IMAGE)
-      - name: build-image-params-TLSVERIFY
+      - name: BUILD_IMAGE_PARAMS_TLSVERIFY
         value: $(params.build-image-params-TLSVERIFY)
-      - name: build-image-results-IMAGE_DIGEST
+      - name: BUILD_IMAGE_RESULTS_IMAGE_DIGEST
         value: $(params.build-image-results-IMAGE_DIGEST)
   
-      - name: deploy-dev-params-charts_dir
+      - name: DEPLOY_DEV_PARAMS_CHARTS_DIR
         value: $(params.deploy-dev-params-charts_dir)
-      - name: deploy-dev-params-overwrite_values
+      - name: DEPLOY_DEV_PARAMS_OVERWRITE_VALUES
         value: $(params.deploy-dev-params-overwrite_values)
 
       args:
@@ -64,38 +64,19 @@ spec:
           # Pipeline Report
           
           ## Task - Git Clone
-          ### Params
-          | Name                      | Value      |
-          | -------- | --------------------------- |
-          | url      | ${git-clone-params-url}     |
-          | revision | ${git-clone-params-revision}|
-          ### Results
-          | Name     | Value                       |
-          | url      | ${git-clone-results-url}    |
-          | commit   | ${git-clone-results-commit} |
+          | Name         | Value                          |
+          | URL          | ${GIT_CLONE_RESULTS_URL} |
+          | Commit       | ${GIT_CLONE_RESULTS_COMMIT} |
  
           ## Task - Build Image
-          ### Params
-          | Name                         | Value       |
-          | --------- | ----------- |
-          | IMAGE     | ${build-image-params-IMAGE} |
-          | TLSVERIFY | ${build-image-params-TLSVERIFY} |
-          ### Results
-          | Name                             | Value                                      |
-          | -------------------------------- | ------------------------------------------ |
-          | IMAGE_DIGEST | ${build-image-results-IMAGE_DIGEST} |
+          | Name         | Value                          |
+          | ------------ | ------------------------------ |
+          | Image Digest | ${BUILD_IMAGE_RESULTS_IMAGE_DIGEST} |
 
           ## Task - Deploy: DEV
-          ### Params
-          | Name                               | Value                                        |
-          |------------------------------------| -------------------------------------------- |
-          | charts_dir       | ${deploy-dev-params-charts_dir}       |
-          | overwrite_values | ${deploy-dev-params-overwrite_values} |
-
-          ### Results
-          | Name       | Value                                        |
-          |------------| ------------------------------ |
-          | Route Name | ${DEPLOY_DEV_FACTS_ROUTE_NAME} |
-          | Route URL  | ${DEPLOY_DEV_FACTS_ROUTE_URL}  |
+          | Name         | Value                          |
+          |------------- | ------------------------------ |
+          | Route Name   | ${DEPLOY_DEV_FACTS_ROUTE_NAME} |
+          | Route URL    | ${DEPLOY_DEV_FACTS_ROUTE_URL} |
           EOF
 
