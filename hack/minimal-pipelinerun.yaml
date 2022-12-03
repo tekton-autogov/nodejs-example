@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: nodejs-autogov-
+  generateName: minimal-
 spec:
   params:
   - name: deployment-name
@@ -15,7 +15,7 @@ spec:
   - name: TLSVERIFY
     value: "true"
   pipelineRef:
-    name: autogov-generic
+    name: minimal
   serviceAccountName: pipeline
   timeout: 1h0m0s
   workspaces:
