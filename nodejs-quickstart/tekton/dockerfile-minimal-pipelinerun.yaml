@@ -16,7 +16,7 @@ spec:
     value: image-registry.openshift-image-registry.svc:5000/pipelines/nodejs-image
   - name: helm_release_name
     value: nodejs-quickstart
-  - name: charts_dir
+  - name: helm_charts_dir
     value: nodejs-quickstart/helm/
   - name: TLSVERIFY
     value: "true"
