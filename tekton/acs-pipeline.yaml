@@ -57,6 +57,21 @@ spec:
       workspace: shared-workspace
     runAfter:
     - git-clone
+  - name: image-scan
+    taskRef:
+      name: stackrox-image-scan
+      kind: Task
+    params:
+    - name: image
+      value: $(params.IMAGE)
+    - name: rox_api_token
+      value: roxsecrets
+    - name: rox_central_endpoint
+      value: roxsecrets
+    - name: insecure-skip-tls-verify
+      value: true
+    runAfter:
+    - build-image
   - name: deploy-dev
     taskRef:
       name: helm-upgrade-from-source

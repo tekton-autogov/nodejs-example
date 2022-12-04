@@ -6,7 +6,8 @@ oc delete -f ./tekton/
 oc create -f ./tekton/
 
 # Test
-oc create -f ./hack/minimal-pipelinerun.yaml
+#oc create -f ./hack/minimal-pipelinerun.yaml
+oc create -f ./hack/acs-pipelinerun.yaml
 watch tkn pipelinerun describe --last # Watch description of pipeline until it completes
 tkn pipelinerun describe --last # Print description of pipeline after watch exists so that it stays on screen
 curl -L $(oc get route nodejs-example -n nodejs-example -o jsonpath='{.spec.host}') && echo # Test the route
