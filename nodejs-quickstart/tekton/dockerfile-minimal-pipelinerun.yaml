@@ -9,11 +9,11 @@ spec:
   - name: git-revision
     value: main
   - name: DOCKERFILE
-    value: nodejs-quickstart/Dockerfile.builder
+    value: nodejs-quickstart/Dockerfile
   - name: CONTEXT
     value: nodejs-quickstart/
   - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/pipelines/dockerfile-image
+    value: image-registry.openshift-image-registry.svc:5000/pipelines/nodejs-image
   - name: helm_release_name
     value: nodejs-quickstart
   - name: charts_dir
