@@ -5,6 +5,7 @@ metadata:
 spec:
   workspaces:
   - name: shared-workspace
+  - name: maven-settings
   params:
   - name: git-url
     description: url of the git repo for the code of deployment
@@ -22,7 +23,7 @@ spec:
     description: Path to the Dockerfile to build.
     default: springboot-quickstart/Dockerfile
     type: string
-  - description: Path to the directory to use as context.
+  - description: Path to the directory to use as a context directory for maven and buildah.
     name: CONTEXT
     type: string
     default: springboot-quickstart/
@@ -64,11 +65,13 @@ spec:
       name: maven
       kind: ClusterTask
     params:
-    - name: CONTEXT
+    - name: CONTEXT_DIR
       value: $(params.CONTEXT)
     workspaces:
     - name: source
       workspace: shared-workspace
+    - name: maven-settings
+      workspace: maven-settings
     runAfter:
     - git-clone
   - name: build-image

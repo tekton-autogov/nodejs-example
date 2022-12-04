@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: springboot-java-minimal-
+  generateName: spring-boot-java-minimal-
 spec:
   params:
   - name: git-url
@@ -9,15 +9,15 @@ spec:
   - name: git-revision
     value: main
   - name: DOCKERFILE
-    value: springboot-quickstart/Dockerfile
+    value: spring-boot-quickstart/Dockerfile
   - name: CONTEXT
-    value: springboot-quickstart/
+    value: spring-boot-quickstart/
   - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/pipelines/springboot-image
+    value: image-registry.openshift-image-registry.svc:5000/pipelines/spring-boot-image
   - name: helm_release_name
-    value: springboot-quickstart
+    value: spring-boot-quickstart
   - name: helm_charts_dir
-    value: springboot-quickstart/helm/
+    value: spring-boot-quickstart/helm/
   - name: TLSVERIFY
     value: "true"
   pipelineRef:
@@ -27,8 +27,6 @@ spec:
   workspaces:
   - name: shared-workspace
     volumeClaimTemplate:
-      metadata:
-        creationTimestamp: null
       spec:
         accessModes:
         - ReadWriteOnce
@@ -36,4 +34,6 @@ spec:
           requests:
             storage: 1Gi
         volumeMode: Filesystem
+  - name: maven-settings
+    emptyDir: {}
 
