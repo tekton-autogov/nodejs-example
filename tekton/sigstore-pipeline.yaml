@@ -1,0 +1,127 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: sigstore
+spec:
+  workspaces:
+  - name: shared-workspace
+  params:
+  - name: deployment-name
+    type: string
+    description: name of the deployment to be patched
+    default: nodejs-example
+  - name: git-url
+    type: string
+    description: url of the git repo for the code of deployment
+    default: https://github.com/tekton-autogov/nodejs-example.git
+  - name: git-revision
+    type: string
+    description: revision to be used from repo of the code for deployment
+    default: main
+  - name: IMAGE
+    type: string
+    description: image to be build from the code
+    default: image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example
+  - name: TLSVERIFY
+    type: string
+    description: Whether buildah should use TLS verification for interacting with container registries
+    default: "true"
+  tasks:
+  - name: git-clone
+    taskRef:
+      name: git-clone
+      kind: ClusterTask
+    workspaces:
+    - name: output
+      workspace: shared-workspace
+    params:
+    - name: url
+      value: $(params.git-url)
+    - name: subdirectory
+      value: ""
+    - name: deleteExisting
+      value: "false"
+    - name: revision
+      value: $(params.git-revision)
+  - name: build-image
+    taskRef:
+      name: buildah
+      kind: ClusterTask
+    params:
+    - name: IMAGE
+      value: $(params.IMAGE)
+    - name: TLSVERIFY
+      value: $(params.TLSVERIFY)
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - git-clone
+  - name: image-scan
+    taskRef:
+      name: stackrox-image-scan
+      kind: Task
+    params:
+    - name: image
+      value: $(params.IMAGE)
+    - name: rox_api_token
+      value: roxsecrets
+    - name: rox_central_endpoint
+      value: roxsecrets
+    - name: insecure-skip-tls-verify
+      value: true
+    runAfter:
+    - build-image
+  - name: deploy-dev
+    taskRef:
+      name: helm-upgrade-from-source
+      kind: ClusterTask
+    params:
+    - name: charts_dir
+      value: helm
+    - name: overwrite_values
+      value: "image.tag=$(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)"
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    runAfter:
+    - build-image
+  finally:
+  - name: report
+    taskRef:
+      name: markdown-report
+    params:
+    - name: pipeline-param-deployment-name
+      value: $(params.deployment-name)
+    - name: pipeline-param-git-url
+      value: $(params.git-url)
+    - name: pipeline-param-git-revision
+      value: $(params.git-revision)
+    - name: pipeline-param-IMAGE
+      value: $(params.IMAGE)
+    - name: pipeline-param-TLSVERIFY
+      value: $(params.TLSVERIFY)
+
+    - name: git-clone-params-url
+      value: $(tasks.git-clone.params.url)
+    - name: git-clone-params-subdirectory
+      value: $(tasks.git-clone.params.subdirectory)
+    - name: git-clone-params-revision
+      value: $(tasks.git-clone.params.revision)
+    - name: git-clone-results-commit
+      value: $(tasks.git-clone.results.commit)
+    - name: git-clone-results-url
+      value: $(tasks.git-clone.results.url)
+
+    - name: build-image-params-IMAGE
+      value: $(tasks.build-image.params.IMAGE)
+    - name: build-image-params-TLSVERIFY
+      value: $(tasks.build-image.params.TLSVERIFY)
+    - name: build-image-results-IMAGE_DIGEST
+      value: $(tasks.build-image.results.IMAGE_DIGEST)
+
+    - name: deploy-dev-params-charts_dir
+      value: $(tasks.deploy-dev.params.charts-dir)
+    - name: deploy-dev-params-overwrite_values
+      value: $(tasks.deploy-dev.params.overwrite_values)
+

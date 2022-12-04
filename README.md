@@ -4,7 +4,8 @@
 ## Prerequisites
 - An OpenShift cluster
 - The `oc` cli
-- The `tkn` cli (optional)
+- The `tkn` cli (Optional)
+- The cosign cli (Optional. Requred if you want to run the sigstore pipeline). See the [installation docs](https://docs.sigstore.dev/cosign/installation/).
 
 ## Installation
 1. Install the OpenShift Pipelines operator
@@ -44,7 +45,15 @@ ROX_API_TOKEN=<token from the ACS UI>
 oc create secret generic roxsecrets --from-literal=rox_central_endpoint=${ROX_CENTRAL_ENDPOINT} --from-literal=rox_api_token=${ROX_API_TOKEN}
 ```
 
-## Uninstall
+## Addtional Configuration for the sigstore pipeline
+1. `cosign generate-keypair` # Skip the password
+- Use a password
+- Save the generated files.
+- DO NOT accidentally commit your .key file with git and upload it to the Internet.
+2. `oc create secret generic cosign --from-file=cosign.key --from-file=cosign.pub --from-literal=password=<the password you just set>`
+- If you do not want to enter your password as part of the command, run the command without the --from-literal argument and add the password to the secret after it is created. In that case, base64 encode the password, run `oc edit secret cosign` and add a line below the 'cosign.pub' entry like 'password: <base64 encoded value>'. Remember to indent the new line to match the one above it.
+
+## Uninstallation
 ```
 oc delete -f ./tekton/
 helm uninstall helm-release
