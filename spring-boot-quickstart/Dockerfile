@@ -1,4 +1,4 @@
-FROM nexus-docker-devsecops.apps.cluster-2k8k6.2k8k6.sandbox70.opentlc.com/ploigos/openjdk-11
+FROM registry.access.redhat.com/ubi8/openjdk-11-runtime:1.14
 
 USER 0
 
