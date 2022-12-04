@@ -46,12 +46,9 @@ oc create secret generic roxsecrets --from-literal=rox_central_endpoint=${ROX_CE
 ```
 
 ## Addtional Configuration for the sigstore pipeline
-1. `cosign generate-keypair` # Skip the password
-- Use a password
-- Save the generated files.
-- DO NOT accidentally commit your .key file with git and upload it to the Internet.
-2. `oc create secret generic cosign --from-file=cosign.key --from-file=cosign.pub --from-literal=password=<the password you just set>`
-- If you do not want to enter your password as part of the command, run the command without the --from-literal argument and add the password to the secret after it is created. In that case, base64 encode the password, run `oc edit secret cosign` and add a line below the 'cosign.pub' entry like 'password: <base64 encoded value>'. Remember to indent the new line to match the one above it.
+1. Gereate a key pair for signing images with cosign
+- `cosign generate-key-pair k8s//nodejs-example/cosign`
+- Do not enter a password. Hit enter twice when prompted for the password.
 
 ## Uninstallation
 ```

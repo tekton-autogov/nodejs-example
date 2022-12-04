@@ -3,8 +3,6 @@ kind: Pipeline
 metadata:
   name: sigstore
 spec:
-  workspaces:
-  - name: shared-workspace
   params:
   - name: deployment-name
     type: string
@@ -26,6 +24,13 @@ spec:
     type: string
     description: Whether buildah should use TLS verification for interacting with container registries
     default: "true"
+  - name: cosign-image
+    description: The image with cosign in it that you want to run the sign-image Task in.
+    default: image-registry.openshift-image-registry.svc:5000/openshift/cosign
+    type: string
+  workspaces:
+  - name: shared-workspace
+  - name: cosign-key
   tasks:
   - name: git-clone
     taskRef:
@@ -57,19 +62,17 @@ spec:
       workspace: shared-workspace
     runAfter:
     - git-clone
-  - name: image-scan
+  - name: sign-image
     taskRef:
-      name: stackrox-image-scan
-      kind: Task
+      name: cosign-sign
     params:
+    - name: cosign-image
+      value: $(params.cosign-image)
     - name: image
-      value: $(params.IMAGE)
-    - name: rox_api_token
-      value: roxsecrets
-    - name: rox_central_endpoint
-      value: roxsecrets
-    - name: insecure-skip-tls-verify
-      value: true
+      value: "$(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)"
+    workspaces:
+    - name: key
+      workspace: cosign-key
     runAfter:
     - build-image
   - name: deploy-dev

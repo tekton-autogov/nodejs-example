@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: sigstore-
+spec:
+  params:
+  - name: deployment-name
+    value: nodejs-example
+  - name: git-url
+    value: https://github.com/tekton-autogov/nodejs-example.git
+  - name: git-revision
+    value: main
+  - name: IMAGE
+    value: image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example
+  - name: TLSVERIFY
+    value: "true"
+  pipelineRef:
+    name: sigstore
+  serviceAccountName: pipeline
+  timeout: 1h0m0s
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      metadata:
+        creationTimestamp: null
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+  - name: cosign-key
+    secret:
+      secretName: cosign
+
