@@ -26,6 +26,10 @@ spec:
     name: CONTEXT
     type: string
     default: dockerfile-quickstart/
+  - name: helm_charts_dir
+    description: The directory inside the git repository that contains the helm charts
+    default: dockerfile-quickstart/helm/
+    type: string
   - name: helm_release_name
     description: The helm release name
     default: dockerfile-release
@@ -79,7 +83,7 @@ spec:
       kind: ClusterTask
     params:
     - name: charts_dir
-      value: helm
+      value: $(params.helm_charts_dir)
     - name: overwrite_values
       value: "image.tag=$(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)"
     - name: release_version
