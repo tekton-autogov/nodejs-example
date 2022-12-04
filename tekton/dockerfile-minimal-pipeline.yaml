@@ -62,6 +62,10 @@ spec:
     params:
     - name: IMAGE
       value: $(params.IMAGE)
+    - name: DOCKERFILE
+      value: $(params.DOCKERFILE)
+    - name: CONTEXT
+      value: $(params.CONTEXT)
     - name: TLSVERIFY
       value: $(params.TLSVERIFY)
     workspaces:

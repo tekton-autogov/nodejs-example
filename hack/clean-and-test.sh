@@ -1,5 +1,5 @@
 # Uninstall
-helm uninstall helm-release
+helm uninstall dockerfile-quickstart
 oc delete -f ./tekton/
 
 # Install
