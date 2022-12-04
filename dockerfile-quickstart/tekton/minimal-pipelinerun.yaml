@@ -17,7 +17,7 @@ spec:
   - name: helm_release_name
     value: dockerfile-quickstart
   - name: charts_dir
-    value: dockerfile-quickstarts/helm/
+    value: dockerfile-quickstart/helm/
   - name: TLSVERIFY
     value: "true"
   pipelineRef:
