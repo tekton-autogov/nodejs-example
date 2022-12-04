@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: springboot-java-minimal-
+spec:
+  params:
+  - name: git-url
+    value: https://github.com/tekton-autogov/tekton-quickstarts.git
+  - name: git-revision
+    value: main
+  - name: DOCKERFILE
+    value: springboot-quickstart/Dockerfile
+  - name: CONTEXT
+    value: springboot-quickstart/
+  - name: IMAGE
+    value: image-registry.openshift-image-registry.svc:5000/pipelines/springboot-image
+  - name: helm_release_name
+    value: springboot-quickstart
+  - name: helm_charts_dir
+    value: springboot-quickstart/helm/
+  - name: TLSVERIFY
+    value: "true"
+  pipelineRef:
+    name: java-minimal
+  serviceAccountName: pipeline
+  timeout: 30m0s
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      metadata:
+        creationTimestamp: null
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+
