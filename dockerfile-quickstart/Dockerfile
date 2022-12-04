@@ -4,11 +4,15 @@ FROM registry.access.redhat.com/ubi8/ubi
 
 USER root
 
-RUN dnf install --disablerepo=* --enablerepo=ubi-8-appstream --enablerepo=ubi-8-baseos httpd -y && rm -rf /var/cache/yum && \ # Install httpd
+# Install httpd, add a webpage, update permissions so that random uids in the root group can run httpd
+RUN dnf install --disablerepo=* --enablerepo=ubi-8-appstream-rpms --enablerepo=ubi-8-baseos-rpms httpd -y && rm -rf /var/cache/yum && \
     echo "The Web Server is Running" > /var/www/html/index.html && \
     chown -R root: /var/run/httpd/ /var/log/httpd/ && \
     chmod -R g+rwx /var/run/httpd/ /var/log/httpd/
+
+# Add a configuration that has been updated to listen on port 8080 so that non-root users can start httpd
 COPY httpd.conf /etc/httpd/conf/httpd.conf
+
 EXPOSE 8080
 
 USER 1001
