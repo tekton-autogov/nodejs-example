@@ -92,7 +92,10 @@ WARNING: The configuration in this section secures the example namespace by requ
 4. Run the sigstore pipeline. ACS will allow the deployment because the image is signed.
   - `oc create -f hack/sigstore-pipelinerun.yaml`
 5. (Optional) remove the policy so you can run other pipelines again.
-  - 
+  - From the top level menu, select Platform Configuration -> Policy Management
+  - Search for Policy: signed-by-pipeline
+  - Click the 3 dots on the right -> Disable policy
+  - Run the minimal pipeline again to test
 
 
 ## Uninstallation
