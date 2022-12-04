@@ -46,9 +46,54 @@ oc create secret generic roxsecrets --from-literal=rox_central_endpoint=${ROX_CE
 ```
 
 ## Addtional Configuration for the sigstore pipeline
+WARNING: The configuration in this section secures the example namespace by requiring valid signatures on images. Some example pipelines do not sign the images so images built by those pipelines they will stop working. You can always revert the configuration as described below to make them work again.
+
 1. Gereate a key pair for signing images with cosign
-- `cosign generate-key-pair k8s//nodejs-example/cosign`
-- Do not enter a password. Hit enter twice when prompted for the password.
+ - `cosign generate-key-pair k8s//nodejs-example/cosign`
+ - Do not enter a password. Hit enter twice when prompted for the password.
+2. Configure ACS to verify signatures using the pipeline's public key
+  - Get the key with `oc get secret cosign -o jsonpath='{.data.cosign\.pub}' | base64 -d`. The command output should start with "BEGIN PUBLIC KEY".
+  - Browse to the ACS Central web console. You can get the URL with `echo "https://$(oc get route nodejs-example -n nodejs-example -o jsonpath='{.spec.host}')/"`
+  - From the top level menu, select Integrations
+  - scroll down -> Sigstore Integrations -> New Integration
+  - Integration name: tekton
+  - Expand "Cosign"
+  - Add new public key
+  - Public key name: tekton
+  - Paste the output of the oc command above.
+  - Save
+  - From the top level menu, select Platform Configuration -> Policy Management
+  - Create Policy
+  - Name: signed-by-pipeline
+  - Categories: DevOps Best Practices
+  - Click Next
+  - Under "Lifecyle staged", make sure the Deploy box is checked
+  - Under "Response method", select "Inform and enforce"
+  - Under "Configure enforcement behavior" enable the toggle for "Enforce on Deploy"
+  - Click Next
+  - From the right side, drag "Not verified by trusted image signers" to the box that says "Drop a policy field inside"
+  - Click the blue "Select" button
+  - Check the box next to "tekton" and click Save
+  - Click Next
+  - Click "Add inclusion scope"
+  - Cluster: mycluster
+  - Namespace: nodejs-example (or the namespace you are deploying the test image to if it is different)
+  - Click Next
+  - Click Save
+3. Run the minimal pipeline (which does not sign images). ACS will block the deployment (which is good!)
+  - `oc create -f hack/minimal-pipelinerun.yaml`
+  - In the OpenShift web console, Workloads -> Deployments -> Make sure te Project dropdown says 'nodejs-example' -> Click the deployment
+  - Notice it says Scaled to 0.
+  - Click Events. Notice the event that says StackRox (ACS) scaled it down.
+  - In the ACS central UI, select Violations from the top menu
+  - In the filter box, type Policy and click the box that says "Policy:" that displays below the text box. Continue typing signed-by-pipeline and click the box that displays below that says "signed-by-pipeline".
+  - Click the policy in the table that says "signed-by-pipeline"
+  - Notice it says "Container 'nodejs-example' image signature is unverified"
+4. Run the sigstore pipeline. ACS will allow the deployment because the image is signed.
+  - `oc create -f hack/sigstore-pipelinerun.yaml`
+5. (Optional) remove the policy so you can run other pipelines again.
+  - 
+
 
 ## Uninstallation
 ```
