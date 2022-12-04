@@ -16,7 +16,7 @@ spec:
     type: string
   - name: IMAGE
     description: image to be build from the code
-    default: image-registry.openshift-image-registry.svc:5000/dockerfile-image/dockerfile-image
+    default: image-registry.openshift-image-registry.svc:5000/pipelines/dockerfile-image
     type: string
   - name: DOCKERFILE
     description: Path to the Dockerfile to build.
