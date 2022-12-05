@@ -40,7 +40,7 @@ This addtional configuration is only necessary if you want to run pipelines that
   - Copy the generated token and store it safely
 3. In the terminal, using the `oc` cli, create a Secret for the pipeline to use for ACS scan
 ```
-ROX_CENTRAL_ENDPOINT=$(oc get route default-route -n openshift-image-registry -o jsonpath='{.spec.host}'):443
+ROX_CENTRAL_ENDPOINT=$(oc get route central -n stackrox -o jsonpath='{.spec.host}'):443
 ROX_API_TOKEN=<token from the ACS UI>
 oc create secret generic roxsecrets --from-literal=rox_central_endpoint=${ROX_CENTRAL_ENDPOINT} --from-literal=rox_api_token=${ROX_API_TOKEN}
 ```
@@ -49,8 +49,9 @@ oc create secret generic roxsecrets --from-literal=rox_central_endpoint=${ROX_CE
 WARNING: The configuration in this section secures the example namespace by requiring valid signatures on images. Some example pipelines do not sign the images so images built by those pipelines they will stop working. You can always revert the configuration as described below to make them work again.
 
 1. Gereate a key pair for signing images with cosign
- - `cosign generate-key-pair k8s//nodejs-example/cosign`
- - Do not enter a password. Hit enter twice when prompted for the password.
+ - The command will generate the key pair and create a kubernetes secret named "cosign" for you in the "pipelines" namespace.
+ - `cosign generate-key-pair k8s://pipelines/cosign`
+ - Enter a password for the private key and then enter the same password again to confirm
 2. Configure ACS to verify signatures using the pipeline's public key
   - Get the key with `oc get secret cosign -o jsonpath='{.data.cosign\.pub}' | base64 -d`. The command output should start with "BEGIN PUBLIC KEY".
   - Browse to the ACS Central web console. You can get the URL with `echo "https://$(oc get route nodejs-example -n nodejs-example -o jsonpath='{.spec.host}')/"`
