@@ -17,15 +17,15 @@ spec:
     type: string
   - name: IMAGE
     description: image to be build from the code
-    default: image-registry.openshift-image-registry.svc:5000/pipelines/springboog-quickstart
+    default: image-registry.openshift-image-registry.svc:5000/pipelines/spring-boot-quickstart
     type: string
   - name: DOCKERFILE
     description: Path to the Dockerfile to build.
-    default: springboot-quickstart/Dockerfile
+    default: spring-boot-quickstart/Dockerfile
     type: string
   - description: Path to the directory to use as a context directory for maven and buildah.
     name: CONTEXT
-    default: springboot-quickstart/
+    default: spring-boot-quickstart/
     type: string
   - name: maven-goals
     description: Goals and extra arguments to pass to the maven commandd
@@ -35,11 +35,11 @@ spec:
     type: array
   - name: helm_charts_dir
     description: The directory inside the git repository that contains the helm charts
-    default: springboog-quickstart/helm/
+    default: spring-boot-quickstart/helm/
     type: string
   - name: helm_release_name
     description: The helm release name
-    default: springboot-quickstart-release
+    default: spring-boot-quickstart
     type: string
   - name: helm_release_version
     description: The helm release version in semantic versioning format
