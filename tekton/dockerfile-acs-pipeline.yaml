@@ -1,31 +1,47 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: acs
+  name: dockerfile-acs
 spec:
   workspaces:
   - name: shared-workspace
   params:
-  - name: deployment-name
-    type: string
-    description: name of the deployment to be patched
-    default: nodejs-example
   - name: git-url
-    type: string
     description: url of the git repo for the code of deployment
-    default: https://github.com/tekton-autogov/nodejs-example.git
-  - name: git-revision
+    default: https://github.com/tekton-autogov/quickstarts.git
     type: string
+  - name: git-revision
     description: revision to be used from repo of the code for deployment
     default: main
+    type: string
   - name: IMAGE
-    type: string
     description: image to be build from the code
-    default: image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example
-  - name: TLSVERIFY
+    default: image-registry.openshift-image-registry.svc:5000/pipelines/dockerfile-quickstart
     type: string
+  - name: DOCKERFILE
+    description: Path to the Dockerfile to build.
+    default: dockerfile-quickstart/Dockerfile
+    type: string
+  - description: Path to the directory to use as context.
+    name: CONTEXT
+    type: string
+    default: dockerfile-quickstart/
+  - name: helm_charts_dir
+    description: The directory inside the git repository that contains the helm charts
+    default: dockerfile-quickstart/helm/
+    type: string
+  - name: helm_release_name
+    description: The helm release name
+    default: dockerfile-quickstart
+    type: string
+  - name: helm_release_version
+    description: The helm release version in semantic versioning format
+    default: v1.0.0
+    type: string
+  - name: TLSVERIFY
     description: Whether buildah should use TLS verification for interacting with container registries
     default: "true"
+    type: string
   tasks:
   - name: git-clone
     taskRef:
@@ -50,6 +66,10 @@ spec:
     params:
     - name: IMAGE
       value: $(params.IMAGE)
+    - name: DOCKERFILE
+      value: $(params.DOCKERFILE)
+    - name: CONTEXT
+      value: $(params.CONTEXT)
     - name: TLSVERIFY
       value: $(params.TLSVERIFY)
     workspaces:
@@ -78,9 +98,13 @@ spec:
       kind: ClusterTask
     params:
     - name: charts_dir
-      value: helm
+      value: $(params.helm_charts_dir)
     - name: overwrite_values
       value: "image.tag=$(params.IMAGE)@$(tasks.build-image.results.IMAGE_DIGEST)"
+    - name: release_version
+      value: $(params.helm_release_version)
+    - name: release_name
+      value: $(params.helm_release_name)
     workspaces:
     - name: source
       workspace: shared-workspace
@@ -91,8 +115,6 @@ spec:
     taskRef:
       name: markdown-report
     params:
-    - name: pipeline-param-deployment-name
-      value: $(params.deployment-name)
     - name: pipeline-param-git-url
       value: $(params.git-url)
     - name: pipeline-param-git-revision
@@ -101,6 +123,8 @@ spec:
       value: $(params.IMAGE)
     - name: pipeline-param-TLSVERIFY
       value: $(params.TLSVERIFY)
+    - name: pipeline-param-deployment-name
+      value: $(params.helm_release_name)
 
     - name: git-clone-params-url
       value: $(tasks.git-clone.params.url)

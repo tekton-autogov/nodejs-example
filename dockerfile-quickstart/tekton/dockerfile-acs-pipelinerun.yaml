@@ -1,23 +1,29 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: acs-
+  generateName: dockerfile-quickstart-dockerfile-acs-
 spec:
   params:
-  - name: deployment-name
-    value: nodejs-example
   - name: git-url
-    value: https://github.com/tekton-autogov/nodejs-example.git
+    value: https://github.com/tekton-autogov/tekton-quickstarts.git
   - name: git-revision
     value: main
+  - name: DOCKERFILE
+    value: dockerfile-quickstart/Dockerfile
+  - name: CONTEXT
+    value: dockerfile-quickstart/
   - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/nodejs-example/nodejs-example
+    value: image-registry.openshift-image-registry.svc:5000/pipelines/dockerfile-image
+  - name: helm_release_name
+    value: dockerfile-quickstart
+  - name: helm_charts_dir
+    value: dockerfile-quickstart/helm/
   - name: TLSVERIFY
     value: "true"
   pipelineRef:
-    name: acs
+    name: dockerfile-minimal
   serviceAccountName: pipeline
-  timeout: 1h0m0s
+  timeout: 30m0s
   workspaces:
   - name: shared-workspace
     volumeClaimTemplate:
