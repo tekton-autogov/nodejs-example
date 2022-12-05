@@ -16,7 +16,7 @@ spec:
     value: image-registry.openshift-image-registry.svc:5000/pipelines/dockerfile-image
   - name: helm_release_name
     value: dockerfile-quickstart
-  - name: charts_dir
+  - name: helm_charts_dir
     value: dockerfile-quickstart/helm/
   - name: TLSVERIFY
     value: "true"
