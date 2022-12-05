@@ -21,7 +21,7 @@ spec:
   - name: TLSVERIFY
     value: "true"
   pipelineRef:
-    name: dockerfile-cosign
+    name: dockerfile-sigstore
   serviceAccountName: pipeline
   timeout: 30m0s
   workspaces:
@@ -36,4 +36,7 @@ spec:
           requests:
             storage: 1Gi
         volumeMode: Filesystem
+  - name: cosign-key
+    secret:
+      secretName: cosign
 
