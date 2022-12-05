@@ -25,8 +25,12 @@ spec:
     type: string
   - description: Path to the directory to use as a context directory for maven and buildah.
     name: CONTEXT
-    type: string
     default: springboot-quickstart/
+    type: string
+  - name: maven-goals
+    description: Goals and extra arguments to pass to the maven commandd
+    default: package --no-transfer-progress
+    type: string
   - name: helm_charts_dir
     description: The directory inside the git repository that contains the helm charts
     default: springboog-quickstart/helm/
@@ -67,6 +71,8 @@ spec:
     params:
     - name: CONTEXT_DIR
       value: $(params.CONTEXT)
+    - name: GOALS
+      value: $(params.maven-goals)
     workspaces:
     - name: source
       workspace: shared-workspace

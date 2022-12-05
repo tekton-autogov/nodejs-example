@@ -14,6 +14,8 @@ spec:
     value: spring-boot-quickstart/
   - name: IMAGE
     value: image-registry.openshift-image-registry.svc:5000/pipelines/spring-boot-image
+  - name: maven-goals
+    value: package --no-transfer-progress
   - name: helm_release_name
     value: spring-boot-quickstart
   - name: helm_charts_dir
