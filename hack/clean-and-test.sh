@@ -6,8 +6,8 @@ oc delete -f ./tekton/
 oc create -f ./tekton/
 
 # Test
-#oc create -f ./dockerfile-quickstart/tekton/dockerfile-minimal-pipelinerun.yaml
-oc create -f ./dockerfile-quickstart/tekton/dockerfile-acs-pipelinerun.yaml
+oc create -f ./dockerfile-quickstart/tekton/dockerfile-minimal-pipelinerun.yaml
+#oc create -f ./dockerfile-quickstart/tekton/dockerfile-acs-pipelinerun.yaml
 #oc create -f ./nodejs-quickstart/tekton/dockerfile-minimal-pipelinerun.yaml
 #oc create -f ./spring-boot-quickstart/tekton/maven-minimal-pipelinerun.yaml
 #oc create -f ./go-quickstart/tekton/dockerfile-minimal-pipelinerun.yaml
