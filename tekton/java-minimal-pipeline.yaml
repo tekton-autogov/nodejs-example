@@ -29,8 +29,10 @@ spec:
     type: string
   - name: maven-goals
     description: Goals and extra arguments to pass to the maven commandd
-    default: package --no-transfer-progress
-    type: string
+    default:
+    - package
+    - --no-transfer-progress
+    type: array
   - name: helm_charts_dir
     description: The directory inside the git repository that contains the helm charts
     default: springboog-quickstart/helm/
@@ -72,7 +74,7 @@ spec:
     - name: CONTEXT_DIR
       value: $(params.CONTEXT)
     - name: GOALS
-      value: $(params.maven-goals)
+      value: ["$(params.maven-goals[*])"]
     workspaces:
     - name: source
       workspace: shared-workspace
