@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: go-quickstart-dockerfile-minimal-
+spec:
+  params:
+  - name: git-url
+    value: https://github.com/tekton-autogov/tekton-quickstarts.git
+  - name: git-revision
+    value: main
+  - name: DOCKERFILE
+    value: go-quickstart/Dockerfile
+  - name: CONTEXT
+    value: go-quickstart/
+  - name: IMAGE
+    value: image-registry.openshift-image-registry.svc:5000/pipelines/go-quickstart-image
+  - name: helm_release_name
+    value: go-quickstart
+  - name: helm_charts_dir
+    value: go-quickstart/helm/
+  - name: TLSVERIFY
+    value: "true"
+  pipelineRef:
+    name: dockerfile-minimal
+  serviceAccountName: pipeline
+  timeout: 30m0s
+  workspaces:
+  - name: shared-workspace
+    volumeClaimTemplate:
+      metadata:
+        creationTimestamp: null
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+        volumeMode: Filesystem
+
