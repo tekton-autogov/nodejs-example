@@ -13,7 +13,7 @@ spec:
   - name: CONTEXT
     value: dockerfile-quickstart/
   - name: IMAGE
-    value: image-registry.openshift-image-registry.svc:5000/pipelines/dockerfile-image
+    value: image-registry.openshift-image-registry.svc:5000/pipelines/dockerfile-quickstart
   - name: helm_release_name
     value: dockerfile-quickstart
   - name: helm_charts_dir
@@ -21,7 +21,7 @@ spec:
   - name: TLSVERIFY
     value: "true"
   pipelineRef:
-    name: dockerfile-minimal
+    name: dockerfile-acs
   serviceAccountName: pipeline
   timeout: 30m0s
   workspaces:
