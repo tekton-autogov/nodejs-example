@@ -66,6 +66,22 @@ spec:
       value: "false"
     - name: revision
       value: $(params.git-revision)
+  - name: unit-test
+    taskRef:
+      name: maven
+      kind: ClusterTask
+    params:
+    - name: CONTEXT_DIR
+      value: $(params.CONTEXT)
+    - name: GOALS
+      value: ["test", "--no-transfer-progress"]
+    workspaces:
+    - name: source
+      workspace: shared-workspace
+    - name: maven-settings
+      workspace: maven-settings
+    runAfter:
+    - git-clone
   - name: package-application
     taskRef:
       name: maven
@@ -81,7 +97,7 @@ spec:
     - name: maven-settings
       workspace: maven-settings
     runAfter:
-    - git-clone
+    - unit-test
   - name: build-image
     taskRef:
       name: buildah
