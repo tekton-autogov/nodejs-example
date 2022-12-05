@@ -9,13 +9,13 @@
 
 ## Installation
 1. Install the OpenShift Pipelines operator
-3. `oc new-project nodejs-example`
-4. **Important:** Create a new OpenShift project named "nodejs-example". Do not use the default project. `oc new-project nodejs-example`
+3. `oc new-project pipelines`
+4. **Important:** Create a new OpenShift project named "pipelines". Do not use the default project. `oc new-project pipelines`
   - `oc create -f ./tekton/`
 6. Test the installation by running the minimal pipeline
   -`oc create -f ./hack/pipelinerun.yaml'
 7. (Optional) Monitor the pipeline run from the cli. It finish in about 1 minute. `tkn pipelinerun describe --last`
-8. Verify that the application is running `curl $(oc get route nodejs-example -o jsonpath='{.spec.host}') && echo`
+8. Verify that the application is running `curl $(oc get route dockerfile-quickstart -n dockerfile-quickstart -o jsonpath='{.spec.host}') && echo`
 
 # Additional configuration for the ACS pipeline
 This addtional configuration is only necessary if you want to run pipelines that use ACS to scan images (i.e. anything beyond the minimal pipeline).
@@ -26,7 +26,7 @@ This addtional configuration is only necessary if you want to run pipelines that
   - Summary: Install the operator, create a Central CR, generate an init bundle, and create a SecureCluster CR 
 2. In the ACS central web console, generate a token
   - Get the URL to the ACS central web console
-      `echo "https://$(oc get route nodejs-example -n nodejs-example -o jsonpath='{.spec.host}')/"`
+      `echo "https://$(oc get route pipelines -n pipelines -o jsonpath='{.spec.host}')/"`
   - Browse to central (click the URL in the your terminal)
   - Login with username "admin" and password given by this command:
       `oc -n rhacs-operator get secret central-htpasswd -o go-template='`
@@ -44,6 +44,8 @@ ROX_CENTRAL_ENDPOINT=$(oc get route central -n stackrox -o jsonpath='{.spec.host
 ROX_API_TOKEN=<token from the ACS UI>
 oc create secret generic roxsecrets --from-literal=rox_central_endpoint=${ROX_CENTRAL_ENDPOINT} --from-literal=rox_api_token=${ROX_API_TOKEN}
 ```
+3. Allow ACS to pull images from the "pipelines" namespace
+- `oc policy add-role-to-user system:image-puller system:serviceaccount:stackrox:scanner -n pipelines`
 
 ## Addtional Configuration for the sigstore pipeline
 WARNING: The configuration in this section secures the example namespace by requiring valid signatures on images. Some example pipelines do not sign the images so images built by those pipelines they will stop working. You can always revert the configuration as described below to make them work again.
@@ -54,7 +56,7 @@ WARNING: The configuration in this section secures the example namespace by requ
  - Enter a password for the private key and then enter the same password again to confirm
 2. Configure ACS to verify signatures using the pipeline's public key
   - Get the key with `oc get secret cosign -o jsonpath='{.data.cosign\.pub}' | base64 -d`. The command output should start with "BEGIN PUBLIC KEY".
-  - Browse to the ACS Central web console. You can get the URL with `echo "https://$(oc get route nodejs-example -n nodejs-example -o jsonpath='{.spec.host}')/"`
+  - Browse to the ACS Central web console. You can get the URL with `echo "https://$(oc get route central -n stackrox -o jsonpath='{.spec.host}')/"`
   - From the top level menu, select Integrations
   - scroll down -> Sigstore Integrations -> New Integration
   - Integration name: tekton
